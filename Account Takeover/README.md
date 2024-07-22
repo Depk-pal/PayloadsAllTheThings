@@ -1,4 +1,4 @@
-# Account Takeover De
+# Account Takeover
 
 ## Summary
 
