@@ -36,12 +36,42 @@
 
 ### Password Reset Token Leak Via Referrer
 
-1. Request password reset to your email address
-2. Click on the password reset link
-3. Don't change password
-4. Click any 3rd party websites(eg: Facebook, twitter)
-5. Intercept the request in Burp Suite proxy
-6. Check if the referer header is leaking password reset token.
+Description/Summary:
+
+It has been identified that the application is leaking referrers to third party sites. In this case it was found that the password reset token is being leaked to third party sites which is an issue knowing the fact that it can allow any malicious users to use the token and reset the passwords of the victim
+
+Sensitive information may include password reset tokens, session IDs, or personally identifiable information. If the external domain is not fully trusted, the information may be used to attack the user or the application. Since header information may be stored in many locations within an organization, the opportunity for sensitive information in the URL to be exposed is greatly increased. Headers are also frequently stored in many places including server logs, proxy logs, and threat detection systems.
+
+Steps To Reproduce:
+
+Step 1 - Go To https: https://wpforo.com/community/?foro= lostpassword
+Step 2 - Enter Your Email And Click On Reset Password
+Step 3 - Go To Email & Click on Password Reset Link
+Step 4 - On Password Reset Page Click On Social Media Links Given Below And Capture The Request Using Burp Suite
+Step 5 - You May Observe Full Password Reset Link Is Exposed To Third Party Sites.
+
+Impact:
+
+For Example User A Forgets His Password He Got To Forgot Password Page Reset And Receive Link By Email And Opened The Password Forgot Page Then Eventually User Remembers His Password and click on social media page then the link will be leaked in URL header
+It allows the person who has control of particular site to change the user's password (CSRF attack), because this person knows reset password token of the use.
+
+Mitigation
+To address this vulnerability, the following steps are recommended:
+
+Validate Referer Header:
+
+Implement server-side validation to ensure that the Referer header is expected and matches the authorized domains.
+Token Expiry:
+
+Ensure that password reset tokens have a limited validity period, reducing the window of opportunity for attackers.
+Use of Secure Channels:
+
+Encourage users to reset their passwords in a secure environment and avoid clicking on unrelated links during the password reset process.
+Monitoring and Logging:
+
+Implement logging mechanisms to track suspicious activities, especially multiple failed password reset attempts.
+
+
 
 ### Account Takeover Through Password Reset Poisoning
 
